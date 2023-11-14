@@ -20,10 +20,7 @@ class MainActivity : AppCompatActivity() {
 
         if (Firebase.auth.currentUser == null) {
             hideBnvMain(true)
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.frame_main, SigninFragment())
-                commit()
-            }
+            changeFragment(SigninFragment())
         } else {
             hideBnvMain(false)
             initNavigationBar()

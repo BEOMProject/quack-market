@@ -64,7 +64,7 @@
         android:ems="10"
         android:fontFamily="@font/suit_regular"
         android:hint="비밀번호를 입력하세요."
-        android:inputType="numberPassword"
+        android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +78,7 @@
         android:ems="10"
         android:fontFamily="@font/suit_regular"
         android:hint="비밀번호를 다시 입력하세요."
-        android:inputType="numberPassword"
+        android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editPassword" />
