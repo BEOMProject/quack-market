@@ -63,8 +63,8 @@
         android:layout_height="0dp"
         android:ems="10"
         android:inputType="phone"
-        android:text="원하는 가격을 작성해주세요!"
-        android:textColor="#AAAAAA"
+        android:hint="원하는 가격을 작성해주세요!"
+        android:textColorHint= "#AAAAAA"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@+id/priceText"
         app:layout_constraintTop_toBottomOf="@+id/priceText" />
@@ -74,7 +74,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="제목 작성하기"
+        android:hint="제목 작성하기"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/editPrice"
@@ -86,82 +86,26 @@
         android:layout_height="0dp"
         android:ems="10"
         android:inputType="text"
-        android:text="10자 이내로 제목을 작성해 주세요!"
-        android:textColor="#AAAAAA"
+        android:hint="10자 이내로 제목을 작성해 주세요!"
+        android:textColorHint= "#AAAAAA"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@+id/titleText"
         app:layout_constraintTop_toBottomOf="@+id/titleText" />
-
-    <TextView
-        android:id="@+id/categoryText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="카테고리 (태그)"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/editTitle"
-        app:layout_constraintTop_toBottomOf="@+id/editTitle" />
 
     <Button
         android:id="@+id/registerButton"
         android:layout_width="184dp"
         android:layout_height="35dp"
+        android:layout_marginTop="30dp"
         android:layout_marginBottom="30dp"
         android:background="@drawable/bg_clicked_button"
         android:includeFontPadding="false"
+        android:padding="0dp"
         android:text="등록하기"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editExplain" />
-
-    <Button
-        android:background="@drawable/bg_tag_button"
-        android:id="@+id/tagClothes"
-        android:layout_width="75dp"
-        android:layout_height="30dp"
-        android:includeFontPadding="false"
-        android:text="#의류"
-        app:cornerRadius="30dp"
-        app:layout_constraintStart_toStartOf="@+id/categoryText"
-        app:layout_constraintTop_toBottomOf="@+id/categoryText" />
-
-    <Button
-        android:id="@+id/tagLife"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_marginStart="10dp"
-        android:background="@drawable/bg_tag_button"
-        android:includeFontPadding="false"
-        android:text="#생활용품"
-        app:layout_constraintBottom_toBottomOf="@+id/tagClothes"
-        app:layout_constraintStart_toEndOf="@+id/tagClothes" />
-
-    <Button
-        android:id="@+id/tagFood"
-        android:layout_width="75dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="10dp"
-        android:background="@drawable/bg_tag_button"
-        android:includeFontPadding="false"
-        android:text="#식품"
-        app:cornerRadius="30dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tagLife"
-        app:layout_constraintStart_toEndOf="@+id/tagLife" />
-
-    <Button
-        android:id="@+id/tagEtc"
-        android:layout_width="75dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="10dp"
-        android:background="@drawable/bg_tag_button"
-        android:includeFontPadding="false"
-        android:text="#기타등등"
-        app:cornerRadius="30dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tagFood"
-        app:layout_constraintEnd_toEndOf="@+id/editTitle"
-        app:layout_constraintStart_toEndOf="@+id/tagFood" />
 
     <TextView
         android:id="@+id/explainText"
@@ -171,8 +115,8 @@
         android:text="설명 작성하기"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/tagClothes"
-        app:layout_constraintTop_toBottomOf="@+id/tagClothes" />
+        app:layout_constraintStart_toStartOf="@+id/titleText"
+        app:layout_constraintTop_toBottomOf="@+id/editTitle" />
 
     <EditText
         android:id="@+id/editExplain"
@@ -182,8 +126,8 @@
         android:background="@drawable/bg_gis_result_items_count"
         android:ems="10"
         android:inputType="text"
-        android:text="50자 이내로 설명을 작성해주세요!"
-        android:textColor="#AAAAAA"
+        android:hint="50자 이내로 설명을 작성해주세요!"
+        android:textColorHint= "#AAAAAA"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@+id/explainText"
         app:layout_constraintTop_toBottomOf="@+id/explainText" />
