@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <ImageView
         android:id="@+id/imageView2"
@@ -22,6 +23,7 @@
         android:layout_marginTop="20dp"
         android:text="300,000원"
         android:textSize="24sp"
+        android:textColor="#131313"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
@@ -34,6 +36,7 @@
         android:layout_marginBottom="5dp"
         android:text="판매 중"
         android:textSize="13sp"
+        android:textColor="#6F6F6F"
         app:layout_constraintBottom_toBottomOf="@+id/priceChange"
         app:layout_constraintStart_toEndOf="@+id/priceChange" />
 
@@ -44,6 +47,7 @@
         android:layout_marginTop="10dp"
         android:text="제목"
         android:textSize="16sp"
+        android:textColor="#131313"
         app:layout_constraintStart_toStartOf="@+id/priceChange"
         app:layout_constraintTop_toBottomOf="@+id/priceChange" />
 
@@ -54,6 +58,7 @@
         android:layout_marginEnd="30dp"
         android:text="날짜"
         android:textSize="10sp"
+        android:textColor="#131313"
         app:layout_constraintBottom_toBottomOf="@+id/saleName"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -76,7 +81,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="설명"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:textColor="#131313" />
         </LinearLayout>
     </ScrollView>
 

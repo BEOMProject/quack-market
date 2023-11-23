@@ -23,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:fontFamily="@font/suit_bold"
                 android:gravity="top"
                 android:text="꽉구마켓"
@@ -36,14 +36,23 @@
                 android:id="@+id/boardIsSaleTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
                 android:layout_marginEnd="10dp"
                 android:fontFamily="@font/suit_regular"
                 android:text="판매 완료 물품 제외"
                 android:textColor="@color/black"
                 android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="@+id/boardMarketTitleTextView"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:background="#E3E3E3"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/boardIsSaleTextView" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView

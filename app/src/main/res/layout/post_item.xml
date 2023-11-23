@@ -7,10 +7,11 @@
 
     <View
         android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:background="#424242"
+        android:layout_height="1.2dp"
+        android:layout_marginTop="8dp"
+        android:background="#E3E3E3"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/boardPostImageView" />
 
@@ -30,6 +31,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
+        android:textSize="15sp"
+        android:textColor="#131313"
         android:maxLines="2"
         android:text="글 제목"
         app:layout_constraintStart_toEndOf="@+id/boardPostImageView"
@@ -40,6 +43,8 @@
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:textSize="12sp"
+        android:textColor="#373737"
         android:text="날짜"
         app:layout_constraintStart_toStartOf="@+id/boardTitleTextView"
         app:layout_constraintTop_toBottomOf="@+id/boardTitleTextView" />
@@ -49,6 +54,9 @@
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="#131313"
         android:text="가격"
         app:layout_constraintStart_toStartOf="@+id/boardDateTextView"
         app:layout_constraintTop_toBottomOf="@+id/boardDateTextView" />
