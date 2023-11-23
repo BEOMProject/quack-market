@@ -116,7 +116,7 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
 
         boardPostDB.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                for (data in snapshot.children) {
+                for (data in snapshot.children.reversed()) {
                     val p = data.getValue(PostModel::class.java)
                     Log.d(TAG, "onChildAdded: $p")
 
