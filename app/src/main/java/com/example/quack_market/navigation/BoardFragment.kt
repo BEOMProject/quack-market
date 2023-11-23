@@ -3,8 +3,11 @@ package com.example.quack_market.navigation
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.quack_market.MainActivity
 import com.example.quack_market.R
 import com.example.quack_market.adapter.BoardPostAdapter
 import com.example.quack_market.databinding.FragmentBoardBinding
@@ -32,9 +35,10 @@ data class PostModel(
     val title: String,
     val imageUrl: String,
     val price: Long,
-    val createdAt: String
+    val createdAt: String,
+    val onSale: Boolean
 ) {
-    constructor() : this("", "", 0, "")
+    constructor() : this("", "", 0, "", true)
 }
 
 class BoardFragment : Fragment(R.layout.fragment_board) {
@@ -42,40 +46,14 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
     private lateinit var boardPostAdapter: BoardPostAdapter
     private lateinit var boardPostDB: DatabaseReference
     private lateinit var userDB: DatabaseReference
-    private val postList = mutableListOf<PostModel>()
+    private var postList = mutableListOf<PostModel>()
+
+    private lateinit var boardIsSaleTextView: TextView
+
+    private var saleMode = true
 
     private val auth: FirebaseAuth by lazy {
         Firebase.auth
-    }
-
-    private val listener = object : ChildEventListener {
-        override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-            val postModel = snapshot.getValue(PostModel::class.java)
-            postModel?.let {
-                Log.d(TAG, "onChildAdded: $postModel")
-
-                if (!postList.contains(it)) {
-                    postList.add(it)
-                    boardPostAdapter.submitList(postList.toList())
-                }
-            }
-        }
-
-        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-            // 변경 사항이 있는 경우 처리
-        }
-
-        override fun onChildRemoved(snapshot: DataSnapshot) {
-            // 삭제된 경우 처리
-        }
-
-        override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-            // 이동된 경우 처리
-        }
-
-        override fun onCancelled(error: DatabaseError) {
-            Log.e(TAG, "값을 읽어오지 못했습니다.", error.toException())
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -91,8 +69,77 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         fragmentBoardBinding.boardPostRecyclerView.layoutManager = LinearLayoutManager(context)
         fragmentBoardBinding.boardPostRecyclerView.adapter = boardPostAdapter
 
-        boardPostDB.addChildEventListener(listener)
+        boardPostDB.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                postList.clear()
+
+                for (data in snapshot.children.reversed()) {
+                    val p =  data.getValue(PostModel::class.java)
+                    Log.d(TAG, "onChildAdded: $p")
+
+                    if (p != null) {
+                        if (saleMode) {
+                            postList.add(p)
+                            boardPostAdapter.submitList(postList.toList())
+                        } else if (p.onSale) {
+                            postList.add(p)
+                            boardPostAdapter.submitList(postList.toList())
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // 취소
+            }
+        })
+
+        boardIsSaleTextView = mBinding.boardIsSaleTextView
+
+        boardIsSaleTextView.setOnClickListener {
+            if (saleMode) {
+                saleMode = false
+                updateData()
+                boardIsSaleTextView.text = "판매 완료 물품도 보기"
+            }
+            else {
+                saleMode = true
+                updateData()
+                boardIsSaleTextView.text = "판매 완료 물품 제외"
+            }
+        }
     }
+
+    // 데이터 업데이트 메서드 수정
+    private fun updateData() {
+        postList.clear()
+
+        boardPostDB.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (data in snapshot.children) {
+                    val p = data.getValue(PostModel::class.java)
+                    Log.d(TAG, "onChildAdded: $p")
+
+                    if (p != null) {
+                        if (saleMode) {
+                            postList.add(p)
+                        } else {
+                            if (p.onSale) {
+                                postList.add(p)
+                            }
+                        }
+                    }
+                }
+
+                boardPostAdapter.submitList(postList.toList())
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e(TAG, "Error fetching data", error.toException())
+            }
+        })
+    }
+
 
     @Suppress("DEPRECATION")
     override fun onResume() {
@@ -102,7 +149,6 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        boardPostDB.removeEventListener(listener)
     }
 
     companion object {
