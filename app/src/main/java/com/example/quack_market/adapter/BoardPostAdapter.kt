@@ -1,41 +1,36 @@
 package com.example.quack_market.adapter
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.quack_market.databinding.PostItemBinding
 import com.example.quack_market.navigation.PostModel
-import java.text.DecimalFormat
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
 class BoardPostAdapter() : ListAdapter<PostModel, BoardPostAdapter.ViewHolder>(diffUtil) {
     inner class ViewHolder(private val binding: PostItemBinding): RecyclerView.ViewHolder(binding.root) {
 
-        @RequiresApi(Build.VERSION_CODES.O)
-        @SuppressLint("SimpleDateFormat", "SetTextI18n")
+        @SuppressLint("SimpleDateFormat")
         fun bind(postModel: PostModel) {
-            val date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).parse(postModel.createdAt)
-            val formatDate = date?.let { SimpleDateFormat("MM월 dd일", Locale.getDefault()).format(it) }
-            binding.boardDateTextView.text = formatDate
+            try {
+                val date = Date()
+                val formattedDate = SimpleDateFormat("MM월 dd일", Locale.getDefault()).format(date)
 
+                binding.boardDateTextView.text = formattedDate
+            } catch (e: IllegalArgumentException) {
+                e.printStackTrace()
+                binding.boardDateTextView.text = "날짜 형식 오류"
+            }
+
+            // 나머지 코드는 그대로 유지
             binding.boardTitleTextView.text = postModel.title
-
-            if (postModel.onSale) {
-                val decimal = DecimalFormat("#,###")
-                binding.boardPriceTextView.text = decimal.format(postModel.price).toString() + " 원"
-            }
-            else {
-                binding.boardPriceTextView.text = "판매 완료"
-            }
+            binding.boardPriceTextView.text = postModel.price.toString() + " 원"
 
             if (postModel.imageUrl.isNotEmpty()) {
                 Glide.with(binding.boardPostImageView)
@@ -55,7 +50,6 @@ class BoardPostAdapter() : ListAdapter<PostModel, BoardPostAdapter.ViewHolder>(d
         )
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(currentList[position])
     }
