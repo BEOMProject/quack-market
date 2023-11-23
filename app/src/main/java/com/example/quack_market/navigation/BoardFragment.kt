@@ -1,13 +1,14 @@
 package com.example.quack_market.navigation
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.Log
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.quack_market.MainActivity
 import com.example.quack_market.R
 import com.example.quack_market.adapter.BoardPostAdapter
 import com.example.quack_market.databinding.FragmentBoardBinding
@@ -16,13 +17,12 @@ import com.example.quack_market.navigation.DBKey.Companion.DB_USERS
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
-import com.google.firebase.database.ChildEventListener
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
-import java.util.Date
 
 class DBKey {
     companion object {
@@ -31,14 +31,25 @@ class DBKey {
     }
 }
 
+@SuppressLint("ParcelCreator")
 data class PostModel(
     val title: String,
     val imageUrl: String,
     val price: Long,
     val createdAt: String,
+    val description: String,
+    val sellerId: String,
     val onSale: Boolean
-) {
-    constructor() : this("", "", 0, "", true)
+) : Parcelable {
+    constructor() : this("", "", 0, "", "", "",true)
+
+    override fun describeContents(): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        TODO("Not yet implemented")
+    }
 }
 
 class BoardFragment : Fragment(R.layout.fragment_board) {
@@ -50,6 +61,7 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
 
     private lateinit var boardIsSaleTextView: TextView
 
+    private val userId = com.google.firebase.ktx.Firebase.auth.currentUser?.uid
     private var saleMode = true
 
     private val auth: FirebaseAuth by lazy {
@@ -64,7 +76,11 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
 
         boardPostDB = Firebase.database.reference.child(DB_POST)
         userDB = Firebase.database.reference.child(DB_USERS)
-        boardPostAdapter = BoardPostAdapter()
+        boardPostAdapter = BoardPostAdapter(this, object : BoardPostAdapter.OnPostItemClickListener {
+            override fun onPostItemClick(postModel: PostModel) {
+                showSalesPostFragment(postModel)
+            }
+        })
 
         fragmentBoardBinding.boardPostRecyclerView.layoutManager = LinearLayoutManager(context)
         fragmentBoardBinding.boardPostRecyclerView.adapter = boardPostAdapter
@@ -110,7 +126,6 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         }
     }
 
-    // 데이터 업데이트 메서드 수정
     private fun updateData() {
         postList.clear()
 
@@ -140,6 +155,14 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         })
     }
 
+    private fun showSalesPostFragment(postModel: PostModel) {
+        val salesPostFragment = SalesPostFragment.newInstance(postModel)
+
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.frame_main, salesPostFragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
 
     @Suppress("DEPRECATION")
     override fun onResume() {
