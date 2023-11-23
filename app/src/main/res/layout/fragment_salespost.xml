@@ -16,13 +16,12 @@
 
     <TextView
         android:id="@+id/priceChange"
-        android:layout_width="120dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
-        android:ems="10"
-        android:text="300,000"
-        android:textSize="30sp"
+        android:text="300,000원"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
@@ -31,10 +30,10 @@
         android:id="@+id/saleStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginBottom="10dp"
-        android:text="TextView"
-        android:textSize="16sp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="5dp"
+        android:text="판매 중"
+        android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="@+id/priceChange"
         app:layout_constraintStart_toEndOf="@+id/priceChange" />
 
@@ -43,8 +42,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="TextView"
-        android:textSize="20sp"
+        android:text="제목"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/priceChange"
         app:layout_constraintTop_toBottomOf="@+id/priceChange" />
 
@@ -53,21 +52,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="30dp"
-        android:text="TextView"
+        android:text="날짜"
+        android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="@+id/saleName"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <ScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="358dp"
-        android:layout_height="253dp"
-        android:layout_marginStart="30dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="100dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/priceChange"
         app:layout_constraintTop_toBottomOf="@+id/saleName">
 
         <LinearLayout
@@ -79,8 +75,8 @@
                 android:id="@+id/saleInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textSize="20sp" />
+                android:text="설명"
+                android:textSize="15sp" />
         </LinearLayout>
     </ScrollView>
 
@@ -88,29 +84,13 @@
         android:id="@+id/saleComplete"
         android:layout_width="130dp"
         android:layout_height="30dp"
-        android:layout_marginStart="140dp"
-        android:layout_marginTop="20dp"
         android:layout_marginBottom="50dp"
-        android:padding="0dp"
         android:background="@drawable/bg_clicked_button"
+        android:padding="0dp"
         android:text="채팅 보내기"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView2"
-        app:layout_constraintVertical_bias="0.75" />
-
-    <Button
-        android:id="@+id/saleChange"
-        android:layout_width="130dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="140dp"
-        android:layout_marginBottom="50dp"
-        android:padding="0dp"
-        android:background="@drawable/bg_clicked_button"
-        android:text="수정하기"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/saleComplete"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,14 +10,19 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.quack_market.databinding.PostItemBinding
+import com.example.quack_market.navigation.BoardFragment
 import com.example.quack_market.navigation.PostModel
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
-import java.util.Date
 import java.util.Locale
 
-class BoardPostAdapter() : ListAdapter<PostModel, BoardPostAdapter.ViewHolder>(diffUtil) {
+class BoardPostAdapter(private val context: BoardFragment, private val itemClickListener: OnPostItemClickListener) :
+    ListAdapter<PostModel, BoardPostAdapter.ViewHolder>(diffUtil) {
+
+    interface OnPostItemClickListener {
+        fun onPostItemClick(postModel: PostModel)
+    }
+
     inner class ViewHolder(private val binding: PostItemBinding): RecyclerView.ViewHolder(binding.root) {
 
         @RequiresApi(Build.VERSION_CODES.O)
@@ -31,7 +36,7 @@ class BoardPostAdapter() : ListAdapter<PostModel, BoardPostAdapter.ViewHolder>(d
 
             if (postModel.onSale) {
                 val decimal = DecimalFormat("#,###")
-                binding.boardPriceTextView.text = decimal.format(postModel.price).toString() + " 원"
+                binding.boardPriceTextView.text = decimal.format(postModel.price).toString()+"원"
             }
             else {
                 binding.boardPriceTextView.text = "판매 완료"
@@ -41,6 +46,10 @@ class BoardPostAdapter() : ListAdapter<PostModel, BoardPostAdapter.ViewHolder>(d
                 Glide.with(binding.boardPostImageView)
                     .load(postModel.imageUrl)
                     .into(binding.boardPostImageView)
+            }
+
+            binding.root.setOnClickListener {
+                itemClickListener.onPostItemClick(postModel)
             }
         }
     }
