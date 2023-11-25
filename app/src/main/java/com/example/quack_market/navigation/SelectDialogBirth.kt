@@ -34,9 +34,15 @@ class SelectDialogBirth: DialogFragment() {
 
         val pickerDay = mBinding.pickerDay
         pickerDay.minValue = 1
+
         pickerMonth.setOnValueChangedListener{ _, _, _ ->
             updatePickerDays(pickerYear, pickerMonth, pickerDay)
         }
+
+        pickerYear.setOnValueChangedListener{ _, _, _ ->
+            updatePickerDays(pickerYear, pickerMonth, pickerDay)
+        }
+
         updatePickerDays(pickerYear, pickerMonth, pickerDay)
 
         mBinding.btnApply.setOnClickListener {
