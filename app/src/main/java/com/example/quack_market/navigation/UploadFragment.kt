@@ -52,13 +52,14 @@ class UploadFragment : Fragment() {
             val createdAt = getCurrentDateTime()
             database.child("$userId").child("name").get().addOnSuccessListener { snapshot ->
                 val sellerId = snapshot.value.toString()
-                val price = mBinding.editPrice.text.toString().toDouble()
+                val priceText = mBinding.editPrice.text.toString()
                 val title = mBinding.editTitle.text.toString()
                 val onSale = true
                 val description = mBinding.editExplain.text.toString()
                 val uid = Firebase.auth.currentUser?.uid
 
-                if (selectedImageUri != null) {
+                if (priceText.isNotEmpty() && title.isNotEmpty() && description.isNotEmpty() && selectedImageUri != null) {
+                    val price = priceText.toDouble()
                     saveDataToFirebase(
                         database,
                         uid,
@@ -72,12 +73,13 @@ class UploadFragment : Fragment() {
                     Toast.makeText(context, "게시글 등록 완료", Toast.LENGTH_SHORT).show()
                     resetInputFields()
                 } else {
-                    // 이미지 선택하지 않았을 때의 처리 추가
+                    Toast.makeText(context, "모든 정보를 입력해주세요", Toast.LENGTH_SHORT).show()
                 }
             }.addOnFailureListener { exception ->
                 // 데이터 가져오기 실패 시 처리할 내용 추가
             }
         }
+
 
         mBinding.imageButton.setOnClickListener {
             openGallery()
