@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="56dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="56dp"
         android:fontFamily="@font/suit_extrabold"
         android:text="회원가입"
         android:textSize="24sp"
@@ -110,10 +110,11 @@
         android:id="@+id/signUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="124dp"
         android:fontFamily="@font/suit_regular"
         android:text="회원가입"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editPasswordCheck" />
 
@@ -121,8 +122,6 @@
         android:id="@+id/quit"
         android:layout_width="50dp"
         android:layout_height="60dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
         android:background="#00ff0000"
         android:fontFamily="@font/suit_extrabold"
         android:text="X"
@@ -170,5 +169,27 @@
         android:textColor="#000000"
         app:layout_constraintBottom_toTopOf="@+id/editPasswordCheck"
         app:layout_constraintStart_toStartOf="@+id/editPasswordCheck" />
+
+    <TextView
+        android:id="@+id/textBirth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/suit_bold"
+        android:text="생년월일"
+        android:textColor="#000000"
+        app:layout_constraintBottom_toTopOf="@+id/btnSelectBirth"
+        app:layout_constraintStart_toStartOf="@+id/btnSelectBirth" />
+
+    <Button
+        android:id="@+id/btnSelectBirth"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="50dp"
+        android:fontFamily="@font/suit_medium"
+        android:text="생년월일 선택"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editPasswordCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

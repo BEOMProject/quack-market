@@ -57,6 +57,9 @@ class SignUpFragment: Fragment() {
                                     , Toast.LENGTH_SHORT).show()
                                 val uid = Firebase.auth.currentUser?.uid
                                 writeNewUser(database, email, uid, name)
+                                database.child("$uid")
+                                    .child("birth")
+                                    .setValue(mBinding.btnSelectBirth.text)
                                 mainActivity.changeFragment(SigninFragment())
                             } else
                                 Toast.makeText(requireActivity(), "회원가입 실패 !"
@@ -65,8 +68,20 @@ class SignUpFragment: Fragment() {
                 }
             }
         }
+
+        mBinding.btnSelectBirth.setOnClickListener {
+            val dialog = SelectDialogBirth()
+            dialog.setBtnClickListener(object : SelectDialogBirth.OnButtonClickListener{
+                override fun onBtnApplyClicked(pickerYear: Int, pickerMonth: Int, pickerDay: Int) {
+                    mBinding.btnSelectBirth.text = "${pickerYear}년 ${pickerMonth}월 ${pickerDay}일"
+                }
+            })
+            dialog.show(requireActivity().supportFragmentManager, "SelectDialogBirth")
+        }
         return mBinding.root
     }
+
+
 
     private fun checkForRegister(userId: String, name: String,
                                  password: String, passwordCheck: String): Int{

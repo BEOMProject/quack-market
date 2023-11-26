@@ -1,9 +1,9 @@
 package com.example.quack_market
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.example.quack_market.databinding.ActivityMainBinding
 import com.example.quack_market.navigation.*
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun initNavigationBar() {
+    private fun initNavigationBar() {
         binding.bnvMain.run {
             setOnNavigationItemSelectedListener {
                 when (it.itemId) {
@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     R.id.mypageItem -> {
-                        changeFragment(MypageFragment())
+                        changeFragment(MyPageFragment())
                     }
 
                     R.id.uploadItem -> {
@@ -56,6 +56,11 @@ class MainActivity : AppCompatActivity() {
     fun changeFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(binding.frameMain.id, fragment).commit()
+    }
+
+    fun backFragment(fragment: Fragment){
+        supportFragmentManager.beginTransaction()
+            .replace(binding.frameMain.id, fragment).addToBackStack(null).commit()
     }
 
     fun hideBnvMain(state: Boolean) {
