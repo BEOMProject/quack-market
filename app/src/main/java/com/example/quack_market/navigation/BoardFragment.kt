@@ -44,11 +44,18 @@ data class PostModel(
     constructor() : this("", "", 0, "", "", "",true)
 
     override fun describeContents(): Int {
-        TODO("Not yet implemented")
+        return 0
     }
 
+
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        TODO("Not yet implemented")
+        dest.writeString(title)
+        dest.writeString(imageUrl)
+        dest.writeLong(price)
+        dest.writeString(createdAt)
+        dest.writeString(description)
+        dest.writeString(sellerId)
+        dest.writeByte(if (onSale) 1 else 0)
     }
 }
 

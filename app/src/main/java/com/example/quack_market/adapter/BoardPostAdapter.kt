@@ -28,8 +28,12 @@ class BoardPostAdapter(private val context: BoardFragment, private val itemClick
         @RequiresApi(Build.VERSION_CODES.O)
         @SuppressLint("SimpleDateFormat", "SetTextI18n")
         fun bind(postModel: PostModel) {
-            val date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).parse(postModel.createdAt)
-            val formatDate = date?.let { SimpleDateFormat("MM월 dd일", Locale.getDefault()).format(it) }
+            val date = postModel.createdAt.takeIf { it.isNotEmpty() }?.let {
+                SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).parse(it)
+            }
+            val formatDate = date?.let {
+                SimpleDateFormat("MM월 dd일", Locale.getDefault()).format(it)
+            } ?: "날짜 없음"
             binding.boardDateTextView.text = formatDate
 
             binding.boardTitleTextView.text = postModel.title
