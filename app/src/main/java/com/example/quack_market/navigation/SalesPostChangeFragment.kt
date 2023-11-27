@@ -41,7 +41,7 @@ class SalesPostChangeFragment(
         val mActivity = activity as MainActivity
         val decimal = DecimalFormat("#,###")
         mBinding.saleName.setText(product.title)
-        mBinding.textChangePrice.text = decimal.format(product.price).toString()
+        mBinding.textChangePrice.setText(decimal.format(product.price))
         mBinding.uploadDate.text = product.date
         mBinding.editTextTextMultiLine.setText(product.description)
         Glide.with(mBinding.imageView2).load(product.imageUrl)
@@ -66,6 +66,14 @@ class SalesPostChangeFragment(
 
         mBinding.buttonUpdate.setOnClickListener {
             val updateHash: HashMap<String, Any> = HashMap()
+            val priceBeforeChange = mBinding.textChangePrice.text.toString()
+            var changePrice: Int
+            if(priceBeforeChange.contains(",")){
+                changePrice = priceBeforeChange.replace(",", "").toInt()
+            } else
+                changePrice = priceBeforeChange.toString().toInt()
+
+            updateHash["price"] = changePrice
             updateHash["title"] = mBinding.saleName.text.toString()
             updateHash["description"] = mBinding.editTextTextMultiLine.text.toString()
 
