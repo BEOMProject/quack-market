@@ -71,7 +71,7 @@ class SalesPostChangeFragment(
             if(priceBeforeChange.contains(",")){
                 changePrice = priceBeforeChange.replace(",", "").toInt()
             } else
-                changePrice = priceBeforeChange.toString().toInt()
+                changePrice = priceBeforeChange.toInt()
 
             updateHash["price"] = changePrice
             updateHash["title"] = mBinding.saleName.text.toString()
