@@ -43,8 +43,6 @@ class ChatRoomActivity : AppCompatActivity() {
         binding.chatRecyclerView.layoutManager = LinearLayoutManager(this)
         chatListDB = FirebaseDatabase.getInstance().reference.child("chatRoom")
 
-        // Get the sellerUid from the Intent
-        sellerUid = intent.getStringExtra("sellerUid")
 
         binding.sendButton.setOnClickListener {
             sendMessage()

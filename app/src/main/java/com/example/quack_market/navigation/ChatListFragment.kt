@@ -18,8 +18,8 @@ import com.google.firebase.database.*
 
 class ChatListFragment : Fragment() {
     private lateinit var binding: FragmentChatlistBinding
-
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val currentUserUid = auth.currentUser?.uid
     private lateinit var chatListDB: DatabaseReference
     private var chatRoomList = mutableListOf<ChatRoomItem>()
     private lateinit var adapter: ChatListAdapter
@@ -48,7 +48,13 @@ class ChatListFragment : Fragment() {
     private fun navigateToChatRoom(chatRoomItem: ChatRoomItem) {
         val intent = Intent(requireContext(), ChatRoomActivity::class.java)
         intent.putExtra("chatRoomId", chatRoomItem.chatRoomId)
-        intent.putExtra("sellerUid", chatRoomItem.user1Uid.toString())
+        val sellerUid: String = if (chatRoomItem.user1Uid.toString() == currentUserUid) {
+            chatRoomItem.user2Uid.toString()
+        } else {
+            chatRoomItem.user1Uid.toString()
+        }
+        intent.putExtra("sellerUid", sellerUid)
+
         startActivity(intent)
     }
 
