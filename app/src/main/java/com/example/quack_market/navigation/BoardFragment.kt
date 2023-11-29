@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.quack_market.R
 import com.example.quack_market.adapter.BoardPostAdapter
+import com.example.quack_market.dao.PostModel
 import com.example.quack_market.databinding.FragmentBoardBinding
 import com.example.quack_market.navigation.DBKey.Companion.DB_POST
 import com.example.quack_market.navigation.DBKey.Companion.DB_USERS
@@ -28,27 +29,6 @@ class DBKey {
     companion object {
         const val DB_POST = "post"
         const val DB_USERS = "users"
-    }
-}
-
-@SuppressLint("ParcelCreator")
-data class PostModel(
-    val title: String,
-    val imageUrl: String,
-    val price: Long,
-    val createdAt: String,
-    val description: String,
-    val sellerId: String,
-    val onSale: Boolean
-) : Parcelable {
-    constructor() : this("", "", 0, "", "", "",true)
-
-    override fun describeContents(): Int {
-        TODO("Not yet implemented")
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        TODO("Not yet implemented")
     }
 }
 
@@ -94,6 +74,8 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
                     Log.d(TAG, "onChildAdded: $p")
 
                     if (p != null) {
+                        p.postId = data.key.toString()
+
                         if (saleMode) {
                             postList.add(p)
                             boardPostAdapter.submitList(postList.toList())

@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.quack_market.MainActivity
 import com.example.quack_market.adapter.MypageAdapter
+import com.example.quack_market.dao.PostModel
 import com.example.quack_market.databinding.FragmentMypageBinding
-import com.example.quack_market.dto.Product
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -28,7 +28,7 @@ class MyPageFragment : Fragment() {
     private val userId = Firebase.auth.currentUser?.uid
     private val postDatabase = Firebase.database.getReference("post")
 
-    private val products: MutableList<Product> = mutableListOf()
+    private val postList: MutableList<PostModel> = mutableListOf()
     private lateinit var mBinding: FragmentMypageBinding
 
     override fun onCreateView(
@@ -36,34 +36,35 @@ class MyPageFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val myPageAdapter = MypageAdapter(products)
+        val myPageAdapter = MypageAdapter(postList)
         mBinding = FragmentMypageBinding.inflate(inflater, container, false)
 
         postDatabase.addValueEventListener(object : ValueEventListener{
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onDataChange(snapshot: DataSnapshot) {
-                products.clear()
+                postList.clear()
                 for (data in snapshot.children){
                     val sellerId = data.child("sellerId").getValue(String::class.java)
                     if(sellerId != userId){
                         continue
                     } else {
-                        val product = data.child("title").getValue(String::class.java)
-                        val price = data.child("price").getValue(Int::class.java)
-                        val date = data.child("createdAt").getValue(String::class.java)
-                        val desc = data.child("description").getValue(String::class.java)
-                        val imageUrl = data.child("imageUrl").getValue(String::class.java)
-                        val onSale = data.child("onSale").getValue(Boolean::class.java)
                         val postId = data.key
+                        val title = data.child("title").getValue(String::class.java)
+                        val imageUrl = data.child("imageUrl").getValue(String::class.java)
+                        val price = data.child("price").getValue(Int::class.java)
+                        val createAt = data.child("createdAt").getValue(String::class.java)
+                        val description = data.child("description").getValue(String::class.java)
+                        val sellerId = data.child("sellerId").getValue(String::class.java)
+                        val onSale = data.child("onSale").getValue(Boolean::class.java)
 
                         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                            .parse(date!!)
+                            .parse(createAt!!)
                         val formatDate = dateFormat.let {
                             SimpleDateFormat("MM월 dd일", Locale.getDefault()).format(it!!)
                         }
 
-                        products.add(Product(price?:0, product.toString(), formatDate,
-                            desc.toString(), imageUrl.toString(), onSale!!, postId!!))
+                        postList.add(PostModel(postId.toString(), title.toString(), imageUrl.toString(),
+                            price!!.toLong(), formatDate.toString(), description.toString(), sellerId.toString(), onSale!!))
                     }
                 }
                 myPageAdapter.notifyDataSetChanged()
@@ -97,9 +98,9 @@ class MyPageFragment : Fragment() {
 
         myPageAdapter.setItemClickListener(object : MypageAdapter.OnItemClickListener {
             override fun onClick(v: View, position: Int) {
-                val product = products[position]
+                val postList = postList[position]
                 mActivity.backFragment(
-                    SalesPostChangeFragment(product, product.postId))
+                    SalesPostChangeFragment(postList))
             }
         })
         return mBinding.root
