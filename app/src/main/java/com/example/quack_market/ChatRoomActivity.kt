@@ -10,6 +10,7 @@ import com.example.quack_market.data.ChatItem
 import com.example.quack_market.data.ChatRoomItem
 import com.example.quack_market.data.DBKey
 import com.example.quack_market.databinding.ActivityChatroomBinding
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
@@ -25,7 +26,7 @@ class ChatRoomActivity : AppCompatActivity() {
 
     private lateinit var chatDB: DatabaseReference
     private val chatList = mutableListOf<ChatItem>()
-    private val adapter = ChatItemAdapter { _: ChatItem -> }
+    private val adapter = ChatItemAdapter(auth.currentUser?.uid ?: "", { _: ChatItem -> })
     private var sellerUid: String? = null
     private var sellerName: String? = null
     private var buyerName: String? = null
@@ -61,7 +62,17 @@ class ChatRoomActivity : AppCompatActivity() {
         nicknameDB.child("$currentUserUid").child("name").get().addOnSuccessListener {
             buyerName = it.value.toString()
         }
-        setupChatDatabase()
+
+        val sellerNameTask = nicknameDB.child("$sellerUid").child("name").get()
+        val buyerNameTask = nicknameDB.child("$currentUserUid").child("name").get()
+
+        Tasks.whenAllSuccess<Any>(sellerNameTask, buyerNameTask).addOnSuccessListener {
+            sellerName = sellerNameTask.result?.value.toString()
+            buyerName = buyerNameTask.result?.value.toString()
+
+            setupChatDatabase()
+        }
+
     }
 
 
@@ -93,25 +104,26 @@ class ChatRoomActivity : AppCompatActivity() {
 
         var chatRoomItem: ChatRoomItem? = null
 
-        if (sellerUid != null && currentUserUid != null) {
-            val nowTime = SimpleDateFormat("yyyy-MM-dd kk:mm:ss", Locale("ko", "KR"))
-                .format(Date(System.currentTimeMillis()))
+        chatListDB.child(chatRoomId).get().addOnSuccessListener { snapshot ->
+            if (!snapshot.exists()) { // 채팅방이 존재하지 않을 때만 새 채팅방을 생성합니다.
+                if (sellerUid != null && currentUserUid != null) {
+                    val nowTime = SimpleDateFormat("yyyy-MM-dd kk:mm:ss", Locale("ko", "KR")).format(Date(System.currentTimeMillis()))
 
-            chatRoomItem = ChatRoomItem(
-                user1Uid = currentUserUid,
-                user2Uid = sellerUid!!,
-                user2Name = sellerName ?: "",
-                user1Name = buyerName ?: "",
-                chatRoomId = chatRoomId,
-                lastMessageTime = nowTime
-            )
-        }
+                    val chatRoomItem = ChatRoomItem(
+                        user1Uid = currentUserUid,
+                        user2Uid = sellerUid!!,
+                        user2Name = sellerName ?: "",
+                        user1Name = buyerName ?: "",
+                        chatRoomId = chatRoomId,
+                        lastMessageTime = nowTime
+                    )
 
-        chatRoomItem?.let {
-            chatListDB.child(chatRoomId).setValue(chatRoomItem)
-
+                    chatListDB.child(chatRoomId).setValue(chatRoomItem)
+                }
+            }
         }
     }
+
 
 
         private fun sendMessage() {
@@ -134,12 +146,9 @@ class ChatRoomActivity : AppCompatActivity() {
         }
     }
     private fun generateChatRoomId(uid1: String?, uid2: String?): String {
-        val sortedUids = listOfNotNull(uid1, uid2).sorted()
-        return if (sortedUids.size >= 2) {
-            "${sortedUids[0]}_${sortedUids[1]}"
-        } else {""
-        }
+        return if (uid1 != null && uid2 != null) {
+            if (uid1 < uid2) "${uid1}_$uid2" else "${uid2}_$uid1"
+        } else ""
     }
-
 
 }

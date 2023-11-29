@@ -48,7 +48,7 @@ class ChatListFragment : Fragment() {
     private fun navigateToChatRoom(chatRoomItem: ChatRoomItem) {
         val intent = Intent(requireContext(), ChatRoomActivity::class.java)
         intent.putExtra("chatRoomId", chatRoomItem.chatRoomId)
-        intent.putExtra("sellerUid", chatRoomItem.user2Uid.toString())
+        intent.putExtra("sellerUid", chatRoomItem.user1Uid.toString())
         startActivity(intent)
     }
 
