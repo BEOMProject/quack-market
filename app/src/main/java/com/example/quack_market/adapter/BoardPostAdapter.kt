@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.quack_market.dao.PostModel
 import com.example.quack_market.databinding.PostItemBinding
 import com.example.quack_market.navigation.BoardFragment
-import com.example.quack_market.navigation.PostModel
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
