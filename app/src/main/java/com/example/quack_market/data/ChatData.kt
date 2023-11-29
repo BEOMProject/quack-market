@@ -1,5 +1,8 @@
 package com.example.quack_market.data
 
+import android.os.Message
+import java.io.Serializable
+
 
 data class ChatItem (
     val time: String,
@@ -12,8 +15,10 @@ data class ChatItem (
 data class ChatRoomItem(
     val sellerName: String = "",
     val lastMessageTime: String = "",
-    val chatRoomId: String = ""
+    val chatRoomId: String = "",
+    var sellerUid: Any,
+    var buyerUid: Any
 ){
-    constructor():this("","","")
+    constructor():this("","","","","")
 }
 

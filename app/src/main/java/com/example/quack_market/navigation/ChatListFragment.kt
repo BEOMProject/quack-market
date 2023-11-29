@@ -2,6 +2,7 @@ package com.example.quack_market.navigation
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,11 +14,7 @@ import com.example.quack_market.adapter.ChatListAdapter
 import com.example.quack_market.data.ChatRoomItem
 import com.example.quack_market.databinding.FragmentChatlistBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 
 class ChatListFragment : Fragment() {
     private lateinit var binding: FragmentChatlistBinding
@@ -52,34 +49,33 @@ class ChatListFragment : Fragment() {
         val intent = Intent(requireContext(), ChatRoomActivity::class.java)
         intent.putExtra("chatRoomId", chatRoomId)
         startActivity(intent)
-        Toast.makeText(requireContext(), "Clicked on chat room: $chatRoomId", Toast.LENGTH_SHORT).show()
     }
-
 
     private fun getChatRooms() {
         val currentUserUid = auth.currentUser?.uid
-        val userChatListDB = FirebaseDatabase.getInstance().reference.child("chatRoom").child(currentUserUid ?: "")
+        chatListDB = FirebaseDatabase.getInstance().reference.child("chatRoom")
 
-        userChatListDB.addChildEventListener(object : ChildEventListener {
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                val chatRoomItem = snapshot.getValue(ChatRoomItem::class.java)
-                chatRoomItem?.let {
-                    if (!chatRoomList.contains(it)) {
-                        chatRoomList.add(it)
-                        adapter.submitList(chatRoomList)
-                        adapter.notifyDataSetChanged()
+        chatListDB.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                chatRoomList.clear()
+
+                for (chatSnapshot in snapshot.children) {
+                    val model = chatSnapshot.getValue(ChatRoomItem::class.java)
+                    model?.let {
+                        if (currentUserUid?.let { it1 -> chatSnapshot.key?.endsWith(it1) } == true) {
+                            it.buyerUid = currentUserUid
+                            chatRoomList.add(it)
+                        }
                     }
                 }
+
+                adapter.submitList(chatRoomList)
+                adapter.notifyDataSetChanged()
             }
 
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
-
-            override fun onChildRemoved(snapshot: DataSnapshot) {}
-
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
-
-            override fun onCancelled(error: DatabaseError) {}
+            override fun onCancelled(error: DatabaseError) {
+                // Handle the error when the data retrieval fails
+            }
         })
     }
-
 }

@@ -25,9 +25,8 @@ class ChatRoomActivity : AppCompatActivity() {
 
     private lateinit var chatDB: DatabaseReference
     private val chatList = mutableListOf<ChatItem>()
-    private val adapter = ChatItemAdapter { _: ChatItem -> /* Handle item click */ }
+    private val adapter = ChatItemAdapter { _: ChatItem -> }
     private var sellerUid: String? = null
-    //private var postId: String? = null
     private lateinit var postId: String
     private lateinit var sellerName: String
     private lateinit var chatListDB: DatabaseReference
@@ -39,24 +38,12 @@ class ChatRoomActivity : AppCompatActivity() {
         binding.chatRecyclerView.adapter = adapter
         binding.chatRecyclerView.layoutManager = LinearLayoutManager(this)
         chatListDB = FirebaseDatabase.getInstance().reference.child("chatRoom")
-            .child(auth.currentUser?.uid ?: "")
+            //.child(auth.currentUser?.uid ?: "")
 
+        //sellerUid = intent.getStringExtra("chatRoomId")?.split("_")?.find { it != auth.currentUser?.uid }
 
         sellerUid = intent.getStringExtra("sellerUid")
-        //postId = intent.getStringExtra("postId") ?: ""
 
-        /*val postIdReference = Firebase.database.getReference("post").child(postId)
-        postIdReference.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                postId = snapshot.key.toString()
-                setupChatDatabase()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
-        })
-
-         */
 
         binding.sendButton.setOnClickListener {
             sendMessage()
@@ -103,13 +90,21 @@ class ChatRoomActivity : AppCompatActivity() {
         val nowTime = SimpleDateFormat("yyyy-MM-dd kk:mm:ss", Locale("ko", "KR"))
             .format(Date(System.currentTimeMillis()))
 
-        val chatRoomItem = ChatRoomItem(
-            chatRoomId = chatRoomId,
-            lastMessageTime = nowTime,
-            sellerName = sellerName
-        )
+        val chatRoomItem = sellerUid?.let {
+            ChatRoomItem(
+                chatRoomId = chatRoomId,
+                lastMessageTime = nowTime,
+                sellerName = sellerName,
+                buyerUid = currentUserUid,
+                sellerUid = it
+            )
+        }
 
-        chatListDB.child(chatRoomItem.chatRoomId).setValue(chatRoomItem)
+        if (chatRoomItem != null) {
+            //chatListDB.child(chatRoomItem.chatRoomId).setValue(chatRoomItem)
+            chatListDB.child(chatRoomId).setValue(chatRoomItem)
+
+        }
     }
 
 
