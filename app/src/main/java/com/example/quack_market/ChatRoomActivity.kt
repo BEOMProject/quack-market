@@ -27,23 +27,23 @@ class ChatRoomActivity : AppCompatActivity() {
     private val chatList = mutableListOf<ChatItem>()
     private val adapter = ChatItemAdapter { _: ChatItem -> }
     private var sellerUid: String? = null
-    private lateinit var postId: String
-    private lateinit var sellerName: String
+    private var sellerName: String? = null
+    private var buyerName: String? = null
     private lateinit var chatListDB: DatabaseReference
+    private val currentUserUid = auth.currentUser?.uid
+    private lateinit var chatRoomId: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatroomBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        sellerUid = intent.getStringExtra("sellerUid")
+        chatRoomId = generateChatRoomId(currentUserUid, sellerUid)
         binding.chatRecyclerView.adapter = adapter
         binding.chatRecyclerView.layoutManager = LinearLayoutManager(this)
         chatListDB = FirebaseDatabase.getInstance().reference.child("chatRoom")
-            //.child(auth.currentUser?.uid ?: "")
 
-        //sellerUid = intent.getStringExtra("chatRoomId")?.split("_")?.find { it != auth.currentUser?.uid }
-
+        // Get the sellerUid from the Intent
         sellerUid = intent.getStringExtra("sellerUid")
-
 
         binding.sendButton.setOnClickListener {
             sendMessage()
@@ -57,15 +57,16 @@ class ChatRoomActivity : AppCompatActivity() {
             sellerName = it.value.toString()
             binding.senderTextView.text = sellerName
 
-            setupChatDatabase()
-
         }
+        nicknameDB.child("$currentUserUid").child("name").get().addOnSuccessListener {
+            buyerName = it.value.toString()
+        }
+        setupChatDatabase()
     }
 
-    private fun setupChatDatabase() {
-        val currentUserUid = auth.currentUser?.uid ?: return
 
-        val chatRoomId = generateChatRoomId(currentUserUid, sellerUid)
+    private fun setupChatDatabase() {
+
         chatDB = FirebaseDatabase.getInstance().reference.child(DBKey.CHILD_CHAT).child(chatRoomId)
 
         chatDB.addChildEventListener(object : ChildEventListener {
@@ -90,25 +91,30 @@ class ChatRoomActivity : AppCompatActivity() {
         val nowTime = SimpleDateFormat("yyyy-MM-dd kk:mm:ss", Locale("ko", "KR"))
             .format(Date(System.currentTimeMillis()))
 
-        val chatRoomItem = sellerUid?.let {
-            ChatRoomItem(
+        var chatRoomItem: ChatRoomItem? = null
+
+        if (sellerUid != null && currentUserUid != null) {
+            val nowTime = SimpleDateFormat("yyyy-MM-dd kk:mm:ss", Locale("ko", "KR"))
+                .format(Date(System.currentTimeMillis()))
+
+            chatRoomItem = ChatRoomItem(
+                user1Uid = currentUserUid,
+                user2Uid = sellerUid!!,
+                user2Name = sellerName ?: "",
+                user1Name = buyerName ?: "",
                 chatRoomId = chatRoomId,
-                lastMessageTime = nowTime,
-                sellerName = sellerName,
-                buyerUid = currentUserUid,
-                sellerUid = it
+                lastMessageTime = nowTime
             )
         }
 
-        if (chatRoomItem != null) {
-            //chatListDB.child(chatRoomItem.chatRoomId).setValue(chatRoomItem)
+        chatRoomItem?.let {
             chatListDB.child(chatRoomId).setValue(chatRoomItem)
 
         }
     }
 
 
-    private fun sendMessage() {
+        private fun sendMessage() {
         val messageText = binding.messageEditText.text.toString().trim()
         if (messageText.isNotEmpty()) {
             val currentUserUid = auth.currentUser?.uid ?: return
@@ -119,7 +125,8 @@ class ChatRoomActivity : AppCompatActivity() {
                 senderUid = currentUserUid,
                 content = messageText,
                 time = nowTime,
-                receiverUid = sellerUid.toString()
+                receiverUid = sellerUid.toString(),
+                chatRoomId = chatRoomId
             )
 
             chatDB.push().setValue(chatItem)

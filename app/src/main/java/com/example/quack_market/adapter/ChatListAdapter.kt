@@ -5,8 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.quack_market.data.ChatItem
 import com.example.quack_market.data.ChatRoomItem
 import com.example.quack_market.databinding.ItemChatlistBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class ChatListAdapter(val onItemClicked: (ChatRoomItem) -> Unit) : ListAdapter<ChatRoomItem, ChatListAdapter.ViewHolder>(diffUtil) {
     inner class ViewHolder(private val binding: ItemChatlistBinding) :
@@ -21,15 +23,21 @@ class ChatListAdapter(val onItemClicked: (ChatRoomItem) -> Unit) : ListAdapter<C
             }
         }
         fun bind(chatListItem: ChatRoomItem) {
-
             binding.root.setOnClickListener{
                 onItemClicked(chatListItem)
             }
 
-            binding.ChatNameTextView.text = chatListItem.sellerName
-            binding.ChatTextView.text = chatListItem.lastMessageTime.toString()
+            val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
 
+            if (currentUserUid == chatListItem.user1Uid) {
+                binding.ChatNameTextView.text = chatListItem.user2Name
+            } else {
+                binding.ChatNameTextView.text = chatListItem.user1Name
+            }
+
+            binding.ChatTextView.text = chatListItem.lastMessageTime
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -59,3 +67,4 @@ class ChatListAdapter(val onItemClicked: (ChatRoomItem) -> Unit) : ListAdapter<C
         }
     }
 }
+

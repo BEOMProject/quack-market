@@ -36,7 +36,7 @@ class ChatListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = ChatListAdapter { chatRoomItem ->
-            navigateToChatRoom(chatRoomItem.chatRoomId)
+            navigateToChatRoom(chatRoomItem)
         }
 
         binding.chatListRecyclerView.adapter = adapter
@@ -45,11 +45,14 @@ class ChatListFragment : Fragment() {
         getChatRooms()
     }
 
-    private fun navigateToChatRoom(chatRoomId: String) {
+    private fun navigateToChatRoom(chatRoomItem: ChatRoomItem) {
         val intent = Intent(requireContext(), ChatRoomActivity::class.java)
-        intent.putExtra("chatRoomId", chatRoomId)
+        intent.putExtra("chatRoomId", chatRoomItem.chatRoomId)
+        intent.putExtra("sellerUid", chatRoomItem.user2Uid.toString())
         startActivity(intent)
     }
+
+
 
     private fun getChatRooms() {
         val currentUserUid = auth.currentUser?.uid
@@ -62,8 +65,7 @@ class ChatListFragment : Fragment() {
                 for (chatSnapshot in snapshot.children) {
                     val model = chatSnapshot.getValue(ChatRoomItem::class.java)
                     model?.let {
-                        if (currentUserUid?.let { it1 -> chatSnapshot.key?.endsWith(it1) } == true) {
-                            it.buyerUid = currentUserUid
+                        if (currentUserUid == it.user1Uid || currentUserUid == it.user2Uid) {
                             chatRoomList.add(it)
                         }
                     }

@@ -8,17 +8,19 @@ data class ChatItem (
     val time: String,
     val senderUid: String,
     val content: String,
-    val receiverUid: String
-){
-    constructor():this("","","","")
-}
-data class ChatRoomItem(
-    val sellerName: String = "",
-    val lastMessageTime: String = "",
-    val chatRoomId: String = "",
-    var sellerUid: Any,
-    var buyerUid: Any
+    val receiverUid: String,
+    val chatRoomId: String
 ){
     constructor():this("","","","","")
+}
+data class ChatRoomItem(
+    val user1Uid: Any ,
+    val user2Uid: Any,
+    val user1Name: String ,
+    val user2Name: String ,
+    val chatRoomId: String,
+    var lastMessageTime: String
+){
+    constructor():this("","","","","","")
 }
 
