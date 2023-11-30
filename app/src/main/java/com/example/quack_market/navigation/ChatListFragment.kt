@@ -23,9 +23,6 @@ class ChatListFragment : Fragment() {
     private lateinit var chatListDB: DatabaseReference
     private var chatRoomList = mutableListOf<ChatRoomItem>()
     private lateinit var adapter: ChatListAdapter
-    private var imageUrl: String? = null
-    private var title: String? = null
-    private var price: Long? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,13 +53,20 @@ class ChatListFragment : Fragment() {
         } else {
             chatRoomItem.user1Uid.toString()
         }
-        intent.putExtra("sellerUid", sellerUid)
-        intent.putExtra("image",imageUrl)
-        intent.putExtra("title",title)
-        intent.putExtra("price",price)
+        chatListDB.child(chatRoomItem.chatRoomId).get().addOnSuccessListener { snapshot ->
+            val imageUrl = snapshot.child("lastImg").value as String?
+            val title = snapshot.child("lastTitle").value as String?
+            val price = snapshot.child("lastPrice").value as Long?
 
-        startActivity(intent)
+            intent.putExtra("sellerUid",sellerUid)
+            intent.putExtra("image", imageUrl)
+            intent.putExtra("title", title)
+            intent.putExtra("price", price)
+
+            startActivity(intent)
+        }
     }
+
 
 
 
