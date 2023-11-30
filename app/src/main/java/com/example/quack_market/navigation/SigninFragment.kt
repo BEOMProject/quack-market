@@ -26,7 +26,13 @@ class SigninFragment : Fragment() {
         mBinding.loginButton.setOnClickListener {
             val userId = mBinding.editIdInLogin.text.toString()
             val password = mBinding.editPasswordInLogin.text.toString()
-            doLogin(userId, password)
+
+            if (userId.isNotEmpty() && password.isNotEmpty()) {
+                doLogin(userId, password)
+            }
+            else {
+                Toast.makeText(requireActivity(), "아이디 또는 비밀번호를 입력하세요.", Toast.LENGTH_SHORT).show()
+            }
         }
 
         mBinding.signUpButton.setOnClickListener {
