@@ -9,6 +9,8 @@ import com.example.quack_market.data.ChatItem
 import com.example.quack_market.data.ChatRoomItem
 import com.example.quack_market.databinding.ItemChatlistBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class ChatListAdapter(val onItemClicked: (ChatRoomItem) -> Unit) : ListAdapter<ChatRoomItem, ChatListAdapter.ViewHolder>(diffUtil) {
     inner class ViewHolder(private val binding: ItemChatlistBinding) :
@@ -34,8 +36,10 @@ class ChatListAdapter(val onItemClicked: (ChatRoomItem) -> Unit) : ListAdapter<C
             } else {
                 binding.ChatNameTextView.text = chatListItem.user1Name
             }
-
-            binding.ChatTextView.text = chatListItem.lastMessageTime
+            val lastMessageDB = Firebase.database.getReference("chatRoom")
+            lastMessageDB.child(chatListItem.chatRoomId).child("lastMessage").get().addOnSuccessListener {
+                binding.ChatTextView.text = it.value.toString()
+            }
         }
 
     }

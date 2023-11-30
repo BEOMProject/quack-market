@@ -5,6 +5,8 @@ import android.provider.ContactsContract.CommonDataKinds.Nickname
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.quack_market.adapter.ChatItemAdapter
 import com.example.quack_market.data.ChatItem
 import com.example.quack_market.data.ChatRoomItem
@@ -15,9 +17,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 class ChatRoomActivity : AppCompatActivity() {
 
@@ -26,24 +30,71 @@ class ChatRoomActivity : AppCompatActivity() {
 
     private lateinit var chatDB: DatabaseReference
     private val chatList = mutableListOf<ChatItem>()
-    private val adapter = ChatItemAdapter(auth.currentUser?.uid ?: "", { _: ChatItem -> })
+    private val adapter = ChatItemAdapter(auth.currentUser?.uid ?: "") { _: ChatItem -> }
     private var sellerUid: String? = null
     private var sellerName: String? = null
     private var buyerName: String? = null
     private lateinit var chatListDB: DatabaseReference
     private val currentUserUid = auth.currentUser?.uid
     private lateinit var chatRoomId: String
+    private var imageUrl: String? = null
+    private var title: String? = null
+    private var price: Long? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityChatroomBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.chatRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.chatRecyclerView.adapter = adapter
+
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                binding.chatRecyclerView.scrollToPosition(adapter.itemCount - 1)
+            }
+        })
+
         sellerUid = intent.getStringExtra("sellerUid")
         chatRoomId = generateChatRoomId(currentUserUid, sellerUid)
-        binding.chatRecyclerView.adapter = adapter
-        binding.chatRecyclerView.layoutManager = LinearLayoutManager(this)
-        chatListDB = FirebaseDatabase.getInstance().reference.child("chatRoom")
+        imageUrl = intent.getStringExtra("image")
+        title = intent.getStringExtra("title")
+        price = intent.getLongExtra("price", 0L)
 
 
+
+        val decimal = DecimalFormat("#,###")
+        chatListDB = Firebase.database.getReference("chatRoom")
+
+        if (imageUrl != null && title != null && price != null) {
+            Glide.with(this)
+                .load(imageUrl)
+                .into(binding.ivThumbnail)
+            binding.titleTextView.text = title
+            binding.priceTextView.text = "${decimal.format(price!!)}원"
+
+        } else {
+            val lastDB = Firebase.database.getReference("chatRoom")
+            lastDB.child(chatRoomId).child("lastImg").get().addOnSuccessListener {
+                val imageUrl = it.value as String?
+                Glide.with(this)
+                    .load(imageUrl)
+                    .into(binding.ivThumbnail)
+            }
+
+            lastDB.child(chatRoomId).child("lastTitle").get().addOnSuccessListener {
+                binding.titleTextView.text = it.value.toString()
+            }
+            lastDB.child(chatRoomId).child("lastPrice").get().addOnSuccessListener {
+                val price = it.value as? Long
+                if (price != null) {
+                    binding.priceTextView.text = "${decimal.format(price)}원"
+                } else {
+                    binding.priceTextView.text = "가격 정보 없음"
+                }
+            }
+        }
         binding.sendButton.setOnClickListener {
             sendMessage()
         }
@@ -70,6 +121,9 @@ class ChatRoomActivity : AppCompatActivity() {
 
             setupChatDatabase()
         }
+
+
+
 
     }
 
@@ -103,9 +157,11 @@ class ChatRoomActivity : AppCompatActivity() {
         var chatRoomItem: ChatRoomItem? = null
 
         chatListDB.child(chatRoomId).get().addOnSuccessListener { snapshot ->
-            if (!snapshot.exists()) { // 채팅방이 존재하지 않을 때만 새 채팅방을 생성합니다.
+            if (!snapshot.exists()) {
                 if (sellerUid != null && currentUserUid != null) {
-                    val nowTime = SimpleDateFormat("yyyy-MM-dd kk:mm:ss", Locale("ko", "KR")).format(Date(System.currentTimeMillis()))
+                    val nowTime = SimpleDateFormat("yyyy-MM-dd kk:mm:ss", Locale("ko", "KR")).apply {
+                        timeZone = TimeZone.getTimeZone("Asia/Seoul")
+                    }.format(Date(System.currentTimeMillis()))
 
                     val chatRoomItem = ChatRoomItem(
                         user1Uid = currentUserUid,
@@ -128,8 +184,9 @@ class ChatRoomActivity : AppCompatActivity() {
         val messageText = binding.messageEditText.text.toString().trim()
         if (messageText.isNotEmpty()) {
             val currentUserUid = auth.currentUser?.uid ?: return
-            val nowTime = SimpleDateFormat("yyyy-MM-dd kk:mm", Locale("ko", "KR"))
-                .format(Date(System.currentTimeMillis()))
+            val nowTime = SimpleDateFormat("yyyy-MM-dd kk:mm:ss", Locale("ko", "KR")).apply {
+                timeZone = TimeZone.getTimeZone("Asia/Seoul")
+            }.format(Date(System.currentTimeMillis()))
 
             val chatItem = ChatItem(
                 senderUid = currentUserUid,
@@ -140,6 +197,12 @@ class ChatRoomActivity : AppCompatActivity() {
             )
 
             chatDB.push().setValue(chatItem)
+
+            chatListDB.child(chatRoomId).child("lastMessage").setValue(messageText)
+            chatListDB.child(chatRoomId).child("lastImg").setValue(imageUrl)
+            chatListDB.child(chatRoomId).child("lastTitle").setValue(title)
+            chatListDB.child(chatRoomId).child("lastPrice").setValue(price)
+
             binding.messageEditText.text.clear()
         }
     }

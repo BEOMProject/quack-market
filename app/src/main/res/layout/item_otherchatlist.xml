@@ -10,7 +10,6 @@
         android:id="@+id/messageTextView"
         android:layout_width="wrap_content"
         android:layout_height="38dp"
-        android:autoLink="web"
         android:background="@drawable/othermsg"
         android:fontFamily="@font/suit_medium"
         android:gravity="start|center_vertical"
@@ -27,6 +26,7 @@
         android:id="@+id/dateTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:text="오전 10:23"
         android:textSize="12sp"
 

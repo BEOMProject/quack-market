@@ -23,6 +23,9 @@ class ChatListFragment : Fragment() {
     private lateinit var chatListDB: DatabaseReference
     private var chatRoomList = mutableListOf<ChatRoomItem>()
     private lateinit var adapter: ChatListAdapter
+    private var imageUrl: String? = null
+    private var title: String? = null
+    private var price: Long? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,6 +57,9 @@ class ChatListFragment : Fragment() {
             chatRoomItem.user1Uid.toString()
         }
         intent.putExtra("sellerUid", sellerUid)
+        intent.putExtra("image",imageUrl)
+        intent.putExtra("title",title)
+        intent.putExtra("price",price)
 
         startActivity(intent)
     }
@@ -82,7 +88,6 @@ class ChatListFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Handle the error when the data retrieval fails
             }
         })
     }

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.quack_market.data.ChatItem
 import com.example.quack_market.databinding.ItemChatBinding
-import com.example.quack_market.databinding.ItemOtherchatistBinding
+import com.example.quack_market.databinding.ItemOtherchatlistBinding
 
 class ChatItemAdapter(private val uid: String, function: (ChatItem) -> Unit) : ListAdapter<ChatItem, RecyclerView.ViewHolder>(diffUtil) {
 
@@ -15,10 +15,11 @@ class ChatItemAdapter(private val uid: String, function: (ChatItem) -> Unit) : L
         fun bind(chatItem: ChatItem){
             binding.messageTextView.text = chatItem.content
             binding.dateTextView.text = chatItem.time
+
         }
     }
 
-    inner class OtherMessageViewHolder(private val binding: ItemOtherchatistBinding): RecyclerView.ViewHolder(binding.root){
+    inner class OtherMessageViewHolder(private val binding: ItemOtherchatlistBinding): RecyclerView.ViewHolder(binding.root){
         fun bind(chatItem: ChatItem){
             binding.messageTextView.text = chatItem.content
             binding.dateTextView.text = chatItem.time
@@ -38,7 +39,7 @@ class ChatItemAdapter(private val uid: String, function: (ChatItem) -> Unit) : L
         return if(viewType == 0) {
             MyMessageViewHolder(ItemChatBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         } else {
-            OtherMessageViewHolder(ItemOtherchatistBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            OtherMessageViewHolder(ItemOtherchatlistBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
 

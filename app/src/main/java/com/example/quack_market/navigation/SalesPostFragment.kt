@@ -77,6 +77,9 @@ class SalesPostFragment : Fragment(R.layout.fragment_salespost) {
                     binding.saleComplete.setOnClickListener {
                         val intent = Intent(requireContext(), ChatRoomActivity::class.java)
                         intent.putExtra("sellerUid", postModel.sellerId)
+                        intent.putExtra("image",postModel.imageUrl)
+                        intent.putExtra("title",postModel.title)
+                        intent.putExtra("price",postModel.price)
                         startActivity(intent)
                     }
                 }

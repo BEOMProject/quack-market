@@ -37,9 +37,14 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
 }
 
 dependencies {
+
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation ("com.github.bumptech.glide:glide:4.11.0")
     implementation("com.google.firebase:firebase-firestore-ktx:24.9.1")
