@@ -1,9 +1,11 @@
 package com.example.quack_market.navigation
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.example.quack_market.ChatRoomActivity
 import com.example.quack_market.R
 import com.example.quack_market.dao.PostModel
 import com.example.quack_market.databinding.FragmentSalespostBinding
@@ -82,6 +84,14 @@ class SalesPostFragment : Fragment(R.layout.fragment_salespost) {
                 }
                 else {
                     binding.saleComplete.text = "채팅 보내기"
+                    binding.saleComplete.setOnClickListener {
+                        val intent = Intent(requireContext(), ChatRoomActivity::class.java)
+                        intent.putExtra("sellerUid", postModel.sellerId)
+                        intent.putExtra("image",postModel.imageUrl)
+                        intent.putExtra("title",postModel.title)
+                        intent.putExtra("price",postModel.price)
+                        startActivity(intent)
+                    }
                 }
             } else {
                 binding.saleComplete.text = "로그인 필요"
@@ -94,3 +104,4 @@ class SalesPostFragment : Fragment(R.layout.fragment_salespost) {
         _binding = null
     }
 }
+

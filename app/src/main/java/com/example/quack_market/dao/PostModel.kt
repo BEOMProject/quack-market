@@ -22,6 +22,13 @@ data class PostModel(
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        TODO("Not yet implemented")
+        dest.writeString(title)
+        dest.writeString(imageUrl)
+        dest.writeLong(price)
+        dest.writeString(createdAt)
+        dest.writeString(description)
+        dest.writeString(sellerId)
+        dest.writeByte(if (onSale) 1 else 0)
     }
+
 }

@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     R.id.messageItem -> {
-                        changeFragment(MessageFragment())
+                        changeFragment(ChatListFragment())
                     }
 
                     R.id.mypageItem -> {
