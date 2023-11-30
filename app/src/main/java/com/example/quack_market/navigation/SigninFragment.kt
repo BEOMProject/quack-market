@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.quack_market.MainActivity
-import com.example.quack_market.R
 import com.example.quack_market.databinding.FragmentSigninBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase

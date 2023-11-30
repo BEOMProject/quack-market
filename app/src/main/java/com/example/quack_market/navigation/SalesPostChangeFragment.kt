@@ -12,8 +12,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.quack_market.MainActivity
+import com.example.quack_market.dao.PostModel
 import com.example.quack_market.databinding.FragmentSalespostChangeBinding
-import com.example.quack_market.dto.Product
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -23,12 +23,22 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 class SalesPostChangeFragment(
-    private val product: Product, private val postId: String
+    private val postModel: PostModel
 ) : Fragment() {
     private lateinit var mBinding: FragmentSalespostChangeBinding
     private val postDatabase = Firebase.database.getReference("post")
 
     companion object {
+        private const val ARG_POST_MODEL = "postModel"
+
+        fun newInstance(postModel: PostModel): SalesPostChangeFragment {
+            val fragment = SalesPostChangeFragment(postModel)
+            val args = Bundle()
+            args.putParcelable(ARG_POST_MODEL, postModel)
+            fragment.arguments = args
+            return fragment
+        }
+
         private const val PICK_IMAGE_REQUEST = 0
     }
 
@@ -40,13 +50,13 @@ class SalesPostChangeFragment(
 
         val mActivity = activity as MainActivity
         val decimal = DecimalFormat("#,###")
-        mBinding.saleName.setText(product.title)
-        mBinding.textChangePrice.text = decimal.format(product.price).toString()
-        mBinding.uploadDate.text = product.date
-        mBinding.editTextTextMultiLine.setText(product.description)
-        Glide.with(mBinding.imageView2).load(product.imageUrl)
+        mBinding.saleName.setText(postModel.title)
+        mBinding.textChangePrice.setText(decimal.format(postModel.price))
+        mBinding.uploadDate.text = postModel.createdAt
+        mBinding.editTextTextMultiLine.setText(postModel.description)
+        Glide.with(mBinding.imageView2).load(postModel.imageUrl)
             .into(mBinding.imageView2)
-        setStatus(product.onSale)
+        setStatus(postModel.onSale)
 
 
         mBinding.imageView2.setOnClickListener {
@@ -55,8 +65,8 @@ class SalesPostChangeFragment(
 
         mBinding.buttonSoldOut.setOnClickListener {
             val updateHash: HashMap<String, Any> = HashMap()
-            updateHash["onSale"] = !product.onSale
-            postDatabase.child(postId).updateChildren(updateHash).addOnCompleteListener {
+            updateHash["onSale"] = !postModel.onSale
+            postDatabase.child(postModel.postId).updateChildren(updateHash).addOnCompleteListener {
                 if (it.isSuccessful) {
                     Log.d("TOGGLE", "##################SUCCESS#################")
                     mActivity.changeFragment(MyPageFragment())
@@ -66,10 +76,18 @@ class SalesPostChangeFragment(
 
         mBinding.buttonUpdate.setOnClickListener {
             val updateHash: HashMap<String, Any> = HashMap()
+            val priceBeforeChange = mBinding.textChangePrice.text.toString()
+            var changePrice: Int
+            if(priceBeforeChange.contains(",")){
+                changePrice = priceBeforeChange.replace(",", "").toInt()
+            } else
+                changePrice = priceBeforeChange.toInt()
+
+            updateHash["price"] = changePrice
             updateHash["title"] = mBinding.saleName.text.toString()
             updateHash["description"] = mBinding.editTextTextMultiLine.text.toString()
 
-            postDatabase.child(postId).updateChildren(updateHash).addOnCompleteListener{
+            postDatabase.child(postModel.postId).updateChildren(updateHash).addOnCompleteListener{
                 if (it.isSuccessful){
                     Log.d("UPDATE", "####################SUCCESS########################")
                     mActivity.changeFragment(MyPageFragment())
@@ -101,7 +119,7 @@ class SalesPostChangeFragment(
             val updateHash: HashMap<String, Any> = HashMap()
             updateHash["imageUrl"] = selectedImageUri!!.toString()
             storageRef.putFile(selectedImageUri).addOnSuccessListener {
-                postDatabase.child(postId).updateChildren(updateHash).addOnCompleteListener{
+                postDatabase.child(postModel.postId).updateChildren(updateHash).addOnCompleteListener{
                     Log.d("IMAGE_UPLOAD", "#################SUCCESS#################")
                 }
             }

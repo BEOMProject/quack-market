@@ -2,12 +2,12 @@ package com.example.quack_market.navigation
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.quack_market.ChatRoomActivity
 import com.example.quack_market.R
+import com.example.quack_market.dao.PostModel
 import com.example.quack_market.databinding.FragmentSalespostBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -71,6 +71,16 @@ class SalesPostFragment : Fragment(R.layout.fragment_salespost) {
                 val uid = currentUser.uid
                 if (uid == postModel.sellerId) {
                     binding.saleComplete.text = "수정하기"
+
+                    binding.saleComplete.setOnClickListener {
+                        val fragment = SalesPostChangeFragment.newInstance(postModel)
+
+                        val fragmentManager = requireActivity().supportFragmentManager
+                        fragmentManager.beginTransaction()
+                            .replace(R.id.frame_main, fragment)
+                            .addToBackStack(null)
+                            .commit()
+                    }
                 }
                 else {
                     binding.saleComplete.text = "채팅 보내기"

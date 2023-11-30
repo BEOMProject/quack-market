@@ -1,16 +1,15 @@
 package com.example.quack_market.adapter
 
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.quack_market.dao.PostModel
 import com.example.quack_market.databinding.MypageItemBinding
-import com.example.quack_market.dto.Product
 import java.text.DecimalFormat
 
-class MypageAdapter(private val products: MutableList<Product>)
+class MypageAdapter(private val postList: MutableList<PostModel>)
     : RecyclerView.Adapter<MypageAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -21,7 +20,7 @@ class MypageAdapter(private val products: MutableList<Product>)
 
     private lateinit var itemClickListener : OnItemClickListener
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val list = products[position]
+        val list = postList[position]
 
         holder.title.text = list.title
 
@@ -31,7 +30,7 @@ class MypageAdapter(private val products: MutableList<Product>)
         holder.itemView.setOnClickListener{
             itemClickListener.onClick(it, position)
         }
-        holder.bind(products[position])
+        holder.bind(postList[position])
     }
     interface OnItemClickListener {
         fun onClick(v: View, position: Int)
@@ -41,7 +40,7 @@ class MypageAdapter(private val products: MutableList<Product>)
     }
 
     override fun getItemCount(): Int {
-        return products.size
+        return postList.size
     }
 
     inner class ViewHolder(private val binding: MypageItemBinding) :
@@ -49,10 +48,10 @@ class MypageAdapter(private val products: MutableList<Product>)
         val title = binding.textTitle
         val price = binding.textPrice
 
-        fun bind(product: Product) {
-            if (product.imageUrl.isNotEmpty()) {
+        fun bind(postModel: PostModel) {
+            if (postModel.imageUrl.isNotEmpty()) {
                 Glide.with(binding.imageProduct)
-                    .load(product.imageUrl)
+                    .load(postModel.imageUrl)
                     .into(binding.imageProduct)
             }
         }
