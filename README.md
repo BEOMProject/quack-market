@@ -41,7 +41,7 @@
 | --- | --- | --- |
 | 고연재 | 메세지 기능 개발 | [yeonjae1](https://github.com/yeonjae1) |
 | 나은정 | 판매글 목록 보기 및 필터링 구현 | [BetterJeong](https://github.com/BetterJeong) |
-| 남기철 | Firebase 연동 및 백엔드 개발 | [GiCheols](https://github.com/GiCheols) |
+| 남기철 | Firebase 연동 및 로그인 회원가입 마이페이지 개발 | [GiCheols](https://github.com/GiCheols) |
 | 장문수 | 판매글 등록 및 수정 기능 개발 | [Moonsu-11](https://github.com/Moonsu-11) |
 
 ---
